@@ -9,6 +9,7 @@ import {
   SidebarMenuItem
 } from "@shared/ui/sidebar.tsx";
 import { ImagePlus } from 'lucide-react';
+import {Link} from "react-router-dom";
 
 const data = {
   menuList: [
@@ -17,7 +18,12 @@ const data = {
       items: [
         {
           title: "Upscale",
-          url: "#",
+          url: "/",
+          icon: ImagePlus,
+        },
+        {
+          title: "Process list",
+          url: "/images",
           icon: ImagePlus,
         }
       ]
@@ -36,10 +42,10 @@ export function MainSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
               {menu.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon/>
                       <span>{item.title}</span>
-                    </a>
+                    </Link >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
