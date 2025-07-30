@@ -10,13 +10,16 @@ import {
   REHYDRATE,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import {imageListReducer} from "@entities/image/imageList";
 
-const rootReducer = combineReducers({})
+const rootReducer = combineReducers({
+  image: imageListReducer
+})
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['cart'],
+  whitelist: ['imageList'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -22,15 +22,16 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@/*": ["./src/*"],
-      "@app/*": ["./src/app/*"],
-      "@processes/*": ["./src/processes/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@features/*": ["./src/features/*"],
-      "@entities/*": ["./src/entities/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@/*": ["*"],
+      "@app/*": ["app/*"],
+      "@processes/*": ["processes/*"],
+      "@pages/*": ["pages/*"],
+      "@features/*": ["features/*"],
+      "@entities/*": ["entities/*"],
+      "@shared/*": ["shared/*"],
+      "@widgets/*": ["widgets/*"]
     }
   },
   "include": ["src"]

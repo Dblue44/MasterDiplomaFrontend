@@ -27,6 +27,21 @@ const data = {
           icon: ImagePlus,
         }
       ]
+    },
+    {
+      title: "Video",
+      items: [
+        {
+          title: "Upscale",
+          url: "/",
+          icon: ImagePlus,
+        },
+        {
+          title: "Process list",
+          url: "/images",
+          icon: ImagePlus,
+        }
+      ]
     }
   ]
 }
