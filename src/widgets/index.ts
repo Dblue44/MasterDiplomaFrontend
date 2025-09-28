@@ -1,3 +1,2 @@
-export {Header} from './header'
-export {ImageUploadWidget} from './imageUploadWidget'
+export {Header} from './header/header.tsx'
 export {PhotoEditorWidget} from './photoEditorWidget'

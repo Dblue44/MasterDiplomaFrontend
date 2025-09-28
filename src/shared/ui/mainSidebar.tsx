@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@shared/ui/sidebar.tsx";
-import { ImagePlus } from 'lucide-react';
+import {ImagePlus, TableProperties} from 'lucide-react';
 import {Link} from "react-router-dom";
 
 const data = {
@@ -24,25 +24,25 @@ const data = {
         {
           title: "Process list",
           url: "/images",
-          icon: ImagePlus,
+          icon: TableProperties,
         }
       ]
     },
-    {
-      title: "Video",
-      items: [
-        {
-          title: "Upscale",
-          url: "/",
-          icon: ImagePlus,
-        },
-        {
-          title: "Process list",
-          url: "/images",
-          icon: ImagePlus,
-        }
-      ]
-    }
+    // {
+    //   title: "Video",
+    //   items: [
+    //     {
+    //       title: "Upscale",
+    //       url: "/",
+    //       icon: ImagePlus,
+    //     },
+    //     {
+    //       title: "Process list",
+    //       url: "/images",
+    //       icon: ImagePlus,
+    //     }
+    //   ]
+    // }
   ]
 }
 

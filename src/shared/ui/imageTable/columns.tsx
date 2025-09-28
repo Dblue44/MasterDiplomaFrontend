@@ -3,8 +3,11 @@ import {TableCellViewer} from "@shared/ui/imageTable";
 import {Checkbox} from "@shared/ui/checkbox.tsx";
 import {Badge} from "@shared/ui/badge.tsx";
 import * as React from "react";
-import {CheckCircle2Icon, ListOrderedIcon, LoaderIcon} from "lucide-react";
+import {Ban, CheckCircle2Icon, ListOrderedIcon, LoaderIcon} from "lucide-react";
 import {ImageType} from "@shared/api/image";
+import {ImageActionsCell} from "@shared/ui/imageTable/imageActionsCell.tsx";
+import {ImageTableMeta} from "@shared/ui/imageTable/types.ts";
+import {TextShimmer} from "@shared/ui/textShimmer.tsx";
 
 export const columns: ColumnDef<ImageType>[] = [
   {
@@ -41,6 +44,7 @@ export const columns: ColumnDef<ImageType>[] = [
   {
     accessorKey: "upscale",
     header: "Upscale",
+
     cell: ({row}) => (
       <Badge variant="outline" className="px-1.5 text-muted-foreground">
         {row.original.upscale}
@@ -59,17 +63,19 @@ export const columns: ColumnDef<ImageType>[] = [
       const status = row.original.status
       const iconMap: Record<string, React.ReactNode> = {
         completed: <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
-        working: <LoaderIcon className="animate-spin text-blue-500 size-4" />,
+        running: <LoaderIcon className="animate-spin text-blue-500 size-4" />,
         queued: <ListOrderedIcon className="text-yellow-500 size-4" />,
+        failed: <Ban className="text-red-500 size-4" />,
       }
 
       return (
         <Badge variant="outline" className="flex items-center gap-1 px-1.5 text-muted-foreground">
           {iconMap[status]}
-          {status}
+          {status === "running" ? <TextShimmer>{status}</TextShimmer> : status}
         </Badge>
       )
     },
+    enableHiding: false,
   },
   {
     accessorKey: "processTime",
@@ -79,6 +85,17 @@ export const columns: ColumnDef<ImageType>[] = [
         {row.original.processTime}
       </Badge>
     ),
+    enableHiding: true,
+  },
+  {
+    id: "actions",
+    cell: ({row, table}) => <ImageActionsCell
+      guid={row.original.guid}
+      completed={row.original.status === "completed"}
+      onEdit={(table.options.meta as ImageTableMeta)?.onEdit}
+      onSave={(table.options.meta as ImageTableMeta)?.onSave}
+    />,
+    enableSorting: false,
     enableHiding: false,
   },
 ]

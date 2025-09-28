@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['imageList'],
+  whitelist: [],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -1,3 +1,3 @@
-export { ImageTable } from './image-table'
-export { TableCellViewer } from './table-cell-viewer'
+export { ImageTable } from './imageTable.tsx'
+export { TableCellViewer } from './tableCellViewer.tsx'
 export { columns } from './columns'

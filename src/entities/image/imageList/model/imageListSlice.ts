@@ -3,36 +3,37 @@ import {postImage} from "@entities/image/imageList/model/imageListThunk.ts";
 import {IImageListState} from "@entities/image/imageList";
 import {ImageType} from "@shared/api/image";
 import {getSocket} from "@shared/lib";
+import {UpdateImageStatusType} from "@shared/api/image/types.ts";
 
 const data: ImageType[] = [
-  // {
-  //   guid: "1",
-  //   name: "file1.png",
-  //   status: "completed",
-  //   upscale: "2x",
-  //   processTime: "15s",
-  // }
-  // {
-  //   guid: "2",
-  //   name: "file2.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "17s",
-  // },
-  // {
-  //   guid: "3",
-  //   name: "file1.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "1m",
-  // },
-  // {
-  //   guid: "3",
-  //   name: "file3.png",
-  //   status: "working",
-  //   upscale: "4x",
-  //   processTime: "-",
-  // },
+  {
+    guid: "1",
+    name: "file1.png",
+    status: "completed",
+    upscale: "2x",
+    processTime: "15s",
+  },
+  {
+    guid: "2",
+    name: "file2.png",
+    status: "queued",
+    upscale: "2x",
+    processTime: "17s",
+  },
+  {
+    guid: "3",
+    name: "file1.png",
+    status: "running",
+    upscale: "2x",
+    processTime: "1m",
+  },
+  {
+    guid: "3",
+    name: "file3.png",
+    status: "failed",
+    upscale: "4x",
+    processTime: "-",
+  },
   // {
   //   guid: "4",
   //   name: "file4.png",
@@ -155,7 +156,7 @@ const imageListSlice = createSlice({
     },
     updateImageStatus: (
       state,
-      action: PayloadAction<{ guid: string; status: string, error?: string }>
+      action: PayloadAction<UpdateImageStatusType>
     ) => {
       const { guid, status } = action.payload;
       const img = state.images?.find((i) => i.guid === guid && i.status != status);

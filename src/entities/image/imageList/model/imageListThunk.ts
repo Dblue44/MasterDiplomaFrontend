@@ -17,7 +17,7 @@ export const postImage = createAsyncThunk<
       processTime: "1m",
     };
     return newImage
-  } catch (err: unknown) {
+  } catch (err) {
     const knownError = err as ErrorType
 
     return thunkAPI.rejectWithValue({

@@ -3,9 +3,9 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { Provider } from 'react-redux'
 import store, { persistor } from '@app/store'
 import { PersistGate } from 'redux-persist/integration/react'
-import { ThemeProvider, WebSocketProvider } from '@app/providers'
+import { ThemeProvider, WebSocketProvider } from '@app/providers/index.ts'
 import {GlobalFallback} from "@shared/ui/fallback";
-import {SidebarProvider} from "@shared/ui/sidebar.tsx";
+import {SidebarProvider} from "@shared/ui/sidebar";
 
 interface IProviders {
   /** Content that will be wrapped by providers. */
