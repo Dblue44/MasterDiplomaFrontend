@@ -4,6 +4,6 @@ export {
   clearError,
   updateImageStatus
 } from './model/imageListSlice'
-export {postImage} from './model/imageListThunk'
+export {postImage, downloadImages} from './model/imageListThunk'
 export {selectImageListImages, selectImageListImagesGuid} from './model/selectors'
 export {type IImageListState} from './model/types'

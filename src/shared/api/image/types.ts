@@ -23,3 +23,18 @@ export const postImageSchema = z.object({
 })
 
 export type PostImageType = z.infer<typeof postImageSchema>
+
+export const downloadImageListTypeSchema = z.object({
+  guids: z.array(
+    z.string(),
+  ),
+})
+
+export type DownloadImageListType = z.infer<typeof downloadImageListTypeSchema>
+
+export const imagesDataTypeSchema = z.object({
+  blob: z.instanceof(Blob),
+  filename: z.string(),
+})
+
+export type ImagesDataType = z.infer<typeof imagesDataTypeSchema>

@@ -8,6 +8,7 @@ import {ImageType} from "@shared/api/image";
 import {ImageActionsCell} from "@shared/ui/imageTable/imageActionsCell.tsx";
 import {ImageTableMeta} from "@shared/ui/imageTable/types.ts";
 import {TextShimmer} from "@shared/ui/textShimmer.tsx";
+import {ImageTableActions} from "@shared/ui/imageTable/imageTableActions.tsx";
 
 export const columns: ColumnDef<ImageType>[] = [
   {
@@ -89,10 +90,18 @@ export const columns: ColumnDef<ImageType>[] = [
   },
   {
     id: "actions",
+    header: ({table}) => (
+      <ImageTableActions
+        isAnySelected={table.getFilteredSelectedRowModel().rows.length > 0}
+        onCancel={(table.options.meta as ImageTableMeta)?.onCancelAll}
+        onSave={(table.options.meta as ImageTableMeta)?.onSaveAll}
+      />
+    ),
     cell: ({row, table}) => <ImageActionsCell
       guid={row.original.guid}
       completed={row.original.status === "completed"}
       onEdit={(table.options.meta as ImageTableMeta)?.onEdit}
+      onCancel={(table.options.meta as ImageTableMeta)?.onCancel}
       onSave={(table.options.meta as ImageTableMeta)?.onSave}
     />,
     enableSorting: false,

@@ -12,6 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import {
+  AlertCircleIcon,
   Ban,
   CheckCircle2Icon,
   ChevronLeftIcon,
@@ -40,8 +41,13 @@ import {
 } from "@shared/ui/dropdownMenu.tsx";
 import {columns} from "@shared/ui/imageTable";
 import {ImageType} from "@shared/api/image";
+import {useMemo} from "react";
+import {toast} from "sonner";
+import {downloadImages} from "@entities/image/imageList";
+import {useAppDispatch} from "@shared/lib";
 
 export function ImageTable({data}: {data: ImageType[] }) {
+  const dispatch = useAppDispatch();
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [selectedStatuses, setSelectedStatuses] = React.useState<string[]>([])
@@ -51,9 +57,43 @@ export function ImageTable({data}: {data: ImageType[] }) {
   })
   const iconMap: Record<string, React.ReactNode> = {
     completed: <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
-    working: <LoaderIcon className="text-blue-500 size-4" />,
+    running: <LoaderIcon className="text-blue-500 size-4" />,
     queued: <ListOrderedIcon className="text-yellow-500 size-4" />,
     failed: <Ban className="text-red-500 size-4" />,
+  }
+
+  const openEdit = (guid: string) => {
+    toast.info("Выбран guid: " + guid)
+  }
+
+  const onSave = async (guid: string) => {
+    const result = await dispatch(downloadImages({guids: [guid]}));
+    if (downloadImages.fulfilled.match(result)) {
+      toast.info("Файл успешно загружен", {
+        icon: <AlertCircleIcon />,
+        richColors: true,
+      });
+    }
+  }
+
+  const onCancel = (guid: string) => {
+    toast.info("Выбран guid: " + guid)
+  }
+
+  const onSaveAll = async () => {
+    const data = table.getFilteredSelectedRowModel().rows
+    const list = data.map(e => e.original.guid)
+    const result = await dispatch(downloadImages({guids: list}));
+    if (downloadImages.fulfilled.match(result)) {
+      toast.info("Файл успешно загружен", {
+        icon: <AlertCircleIcon />,
+        richColors: true,
+      });
+    }
+  }
+
+  const onCancelAll = () => {
+    toast.info("Отмена всех выбранных")
   }
 
   const table = useReactTable({
@@ -71,6 +111,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    meta: useMemo(() => ({ onEdit: openEdit, onSave: onSave, onCancel: onCancel, onSaveAll: onSaveAll, onCancelAll: onCancelAll }), []),
   })
 
   const toggleStatus = (status: string) => {
@@ -127,7 +168,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {["completed", "queued", "working", "failed"].map((status) => (
+                  {["completed", "queued", "running", "failed"].map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
                       checked={selectedStatuses.includes(status)}
@@ -146,7 +187,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
           </div>
           <div className="overflow-hidden rounded-lg border">
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-muted">
+              <TableHeader className="sticky top-0 z-10 dark:bg-neutral-900">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {

@@ -41,7 +41,7 @@ export function ImageActionsCell({guid, completed, onEdit, onSave}: ImageActions
             :
             <Button
               variant="default"
-              className="bg-muted data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
+              className="flex size-8 ml-auto mr-4"
               size="icon"
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}

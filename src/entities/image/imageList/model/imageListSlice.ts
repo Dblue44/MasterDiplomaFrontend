@@ -7,14 +7,14 @@ import {UpdateImageStatusType} from "@shared/api/image/types.ts";
 
 const data: ImageType[] = [
   {
-    guid: "1",
+    guid: "2c40d3e6-e628-4399-ba59-9614c8dadb33",
     name: "file1.png",
     status: "completed",
     upscale: "2x",
     processTime: "15s",
   },
   {
-    guid: "2",
+    guid: "2c40d3e6-e628-4399-ba59-9614c8dadb3b",
     name: "file2.png",
     status: "queued",
     upscale: "2x",

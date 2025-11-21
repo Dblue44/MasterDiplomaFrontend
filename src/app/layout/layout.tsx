@@ -5,7 +5,6 @@ import {Outlet} from "react-router-dom";
 import {Footer} from "@widgets/footer/footer.tsx";
 
 export const Layout = () => {
-  console.log('Layout MOUNTED');
   return (
     <>
       <SidebarInset>

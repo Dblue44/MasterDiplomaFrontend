@@ -48,7 +48,7 @@ export function Footer() {
             <h3 className="font-semibold">О нас</h3>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://github.com/Dblue44/MasterDiplomaFrontend"
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="GitHub"
               >
