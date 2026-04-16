@@ -67,6 +67,7 @@ export const columns: ColumnDef<ImageType>[] = [
         running: <LoaderIcon className="animate-spin text-blue-500 size-4" />,
         queued: <ListOrderedIcon className="text-yellow-500 size-4" />,
         failed: <Ban className="text-red-500 size-4" />,
+        cancelled: <Ban className="text-yellow-500 size-4" />,
       }
 
       return (
@@ -92,17 +93,20 @@ export const columns: ColumnDef<ImageType>[] = [
     id: "actions",
     header: ({table}) => (
       <ImageTableActions
+        selectedRows={table.getFilteredSelectedRowModel().rows.map(r => r.original)}
         isAnySelected={table.getFilteredSelectedRowModel().rows.length > 0}
-        onCancel={(table.options.meta as ImageTableMeta)?.onCancelAll}
-        onSave={(table.options.meta as ImageTableMeta)?.onSaveAll}
+        onCancelMany={(table.options.meta as ImageTableMeta)?.onCancelMany}
+        onSaveMany={(table.options.meta as ImageTableMeta)?.onSaveMany}
+        onDeleteMany={(table.options.meta as ImageTableMeta)?.onDeleteMany}
       />
     ),
     cell: ({row, table}) => <ImageActionsCell
       guid={row.original.guid}
-      completed={row.original.status === "completed"}
+      status={row.original.status}
       onEdit={(table.options.meta as ImageTableMeta)?.onEdit}
       onCancel={(table.options.meta as ImageTableMeta)?.onCancel}
       onSave={(table.options.meta as ImageTableMeta)?.onSave}
+      onDelete={(table.options.meta as ImageTableMeta)?.onDelete}
     />,
     enableSorting: false,
     enableHiding: false,

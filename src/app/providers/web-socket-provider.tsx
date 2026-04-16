@@ -1,62 +1,74 @@
-import {FC, JSX, useEffect} from "react";
+import {FC, JSX, useCallback, useEffect, useRef} from "react";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
 import { updateImageStatus } from "@entities/image/imageList";
 import {selectImageListImagesGuid} from "@entities/image/imageList";
 import { getSocket } from "@shared/lib/socket";
-import {CONFIG} from "@/config";
 import {UpdateImageStatusType} from "@shared/api/image/types.ts";
+import {SubscribePayload} from "./types.ts";
+
+const sig = (guids: string[]) => [...guids].sort().join("|");
 
 export const WebSocketProvider: FC<{ children: JSX.Element }> = ({ children }) => {
   const dispatch = useAppDispatch();
   const guids = useAppSelector(selectImageListImagesGuid);
 
+  const wsRef = useRef<WebSocket | null>(null);
+  const guidsRef = useRef<string[]>([]);
+  const lastSigRef = useRef<string>("");
+
+  const sendSubscribe = useCallback(() => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+    const nextSig = sig(guidsRef.current);
+    if (nextSig === lastSigRef.current) return;
+
+    lastSigRef.current = nextSig;
+    const payload: SubscribePayload = { type: "subscribe", guids: guidsRef.current };
+    ws.send(JSON.stringify(payload));
+  }, []);
+
+  useEffect(() => {
+    guidsRef.current = guids ?? [];
+    sendSubscribe();
+  }, [guids, sendSubscribe]);
+
   useEffect(() => {
     const ws = getSocket();
+    wsRef.current = ws;
 
-    // Обработчики
-    const handleOpen = () => {
-      console.log("[WS] Connected to", CONFIG.WS_URL);
-      ws.send(JSON.stringify({ type: "subscribe", guids }));
+    const onOpen = () => {
+      console.log("[WS] Connected to", ws.url);
+      sendSubscribe();
     };
 
-    const handleMessage = (event: MessageEvent) => {
+    const onMessage = (event: MessageEvent) => {
       try {
-        const data = JSON.parse(event.data) as {
-          guid: string;
-          status: string;
-          error?: string;
-        };
-        dispatch(updateImageStatus(data as UpdateImageStatusType));
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.error("[WS] Invalid message:", event.data, "—", msg);
+        const data = JSON.parse(event.data) as UpdateImageStatusType;
+        dispatch(updateImageStatus(data));
+      } catch (e) {
+        console.error("[WS] invalid message", event.data, e);
       }
     };
 
-    const handleError = (err: Event) => {
-      console.error("[WS] Error", err);
+    const onClose = () => {
+      console.log("[WS] Closed", ws.url);
     };
 
-    const handleClose = (evt: CloseEvent) => {
-      console.log("[WS] Closed", evt.code, evt.reason);
-    };
-
-    ws.addEventListener("open", handleOpen);
-    ws.addEventListener("message", handleMessage);
-    ws.addEventListener("error", handleError);
-    ws.addEventListener("close", handleClose);
+    ws.addEventListener("open", onOpen);
+    ws.addEventListener("message", onMessage);
+    ws.addEventListener("close", onClose);
 
     if (ws.readyState === WebSocket.OPEN) {
-      handleOpen();
+      sendSubscribe();
     }
 
     return () => {
-      ws.removeEventListener("open", handleOpen);
-      ws.removeEventListener("message", handleMessage);
-      ws.removeEventListener("error", handleError);
-      ws.removeEventListener("close", handleClose);
+      ws.removeEventListener("open", onOpen);
+      ws.removeEventListener("message", onMessage);
+      ws.removeEventListener("close", onClose);
     };
-  }, [dispatch, guids]);
+  }, [dispatch, sendSubscribe]);
 
   return <>{children}</>;
 };

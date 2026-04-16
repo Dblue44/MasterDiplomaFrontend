@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {postImage} from "@entities/image/imageList/model/imageListThunk.ts";
+import {postImage, getPreviewImages, getTasks} from "@entities/image/imageList/model/imageListThunk.ts";
 import {IImageListState} from "@entities/image/imageList";
 import {ImageType} from "@shared/api/image";
 import {getSocket} from "@shared/lib";
@@ -7,131 +7,33 @@ import {UpdateImageStatusType} from "@shared/api/image/types.ts";
 
 const data: ImageType[] = [
   {
-    guid: "2c40d3e6-e628-4399-ba59-9614c8dadb33",
+    guid: "null1",
     name: "file1.png",
     status: "completed",
     upscale: "2x",
     processTime: "15s",
   },
   {
-    guid: "2c40d3e6-e628-4399-ba59-9614c8dadb3b",
+    guid: "null2",
     name: "file2.png",
     status: "queued",
     upscale: "2x",
     processTime: "17s",
   },
   {
-    guid: "3",
+    guid: "null3",
     name: "file1.png",
     status: "running",
     upscale: "2x",
     processTime: "1m",
   },
   {
-    guid: "3",
+    guid: "null4",
     name: "file3.png",
     status: "failed",
     upscale: "4x",
     processTime: "-",
-  },
-  // {
-  //   guid: "4",
-  //   name: "file4.png",
-  //   status: "queued",
-  //   upscale: "4x",
-  //   processTime: "1m55s",
-  // },
-  // {
-  //   guid: "5",
-  //   name: "file5.png",
-  //   status: "completed",
-  //   upscale: "3x",
-  //   processTime: "39s",
-  // },
-  // {
-  //   guid: "6",
-  //   name: "file6.png",
-  //   status: "completed",
-  //   upscale: "2x",
-  //   processTime: "15s",
-  // },
-  // {
-  //   guid: "7",
-  //   name: "file7.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "17s",
-  // },
-  // {
-  //   guid: "8",
-  //   name: "file8.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "1m",
-  // },
-  // {
-  //   guid: "9",
-  //   name: "file9.png",
-  //   status: "working",
-  //   upscale: "4x",
-  //   processTime: "-",
-  // },
-  // {
-  //   guid: "10",
-  //   name: "file10.png",
-  //   status: "queued",
-  //   upscale: "4x",
-  //   processTime: "1m55s",
-  // },
-  // {
-  //   guid: "11",
-  //   name: "file11.png",
-  //   status: "completed",
-  //   upscale: "3x",
-  //   processTime: "39s",
-  // },
-  // {
-  //   guid: "12",
-  //   name: "file12.png",
-  //   status: "completed",
-  //   upscale: "2x",
-  //   processTime: "15s",
-  // },
-  // {
-  //   guid: "13",
-  //   name: "file13.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "17s",
-  // },
-  // {
-  //   guid: "14",
-  //   name: "file14.png",
-  //   status: "queued",
-  //   upscale: "2x",
-  //   processTime: "1m",
-  // },
-  // {
-  //   guid: "15",
-  //   name: "file15.png",
-  //   status: "working",
-  //   upscale: "4x",
-  //   processTime: "-",
-  // },
-  // {
-  //   guid: "16",
-  //   name: "file16.png",
-  //   status: "queued",
-  //   upscale: "4x",
-  //   processTime: "1m55s",
-  // },
-  // {
-  //   guid: "17",
-  //   name: "file17.png",
-  //   status: "completed",
-  //   upscale: "3x",
-  //   processTime: "39s",
-  // },
+  }
 ]
 
 const initialState: IImageListState = {
@@ -139,6 +41,8 @@ const initialState: IImageListState = {
   images: data,
   loading: false,
   error: null,
+  previewLoading: false,
+  previewError: null,
 }
 
 const imageListSlice = createSlice({
@@ -154,6 +58,12 @@ const imageListSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    removeImageTask: (state, action: PayloadAction<string>) => {
+      state.images = state.images.filter(el => el.guid !== action.payload);
+    },
+    removeImageTasks: (state, action: PayloadAction<string[]>) => {
+      state.images = state.images.filter(el => !action.payload.includes(el.guid));
+    },
     updateImageStatus: (
       state,
       action: PayloadAction<UpdateImageStatusType>
@@ -162,7 +72,6 @@ const imageListSlice = createSlice({
       const img = state.images?.find((i) => i.guid === guid && i.status != status);
       if (img) {
         img.status = status;
-        // здесь в будущем можно увеличивать processTime
       }
     }
   },
@@ -188,7 +97,43 @@ const imageListSlice = createSlice({
         state.loading = false
         state.error = action.payload?.messageError ?? null
       })
+      .addCase(getPreviewImages.pending, (state) => {
+        state.previewLoading = true;
+        state.previewError = null;
+      })
+      .addCase(getPreviewImages.fulfilled, (state) => {
+        state.previewLoading = false;
+        state.previewError = null;
+      })
+      .addCase(getPreviewImages.rejected, (state, action) => {
+        state.previewLoading = false;
+        state.previewError = action.payload?.messageError ?? 'Failed to load original image';
+      })
+      .addCase(getTasks.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        action.payload.forEach((taskMap) => {
+          const [guid, status] = Object.entries(taskMap)[0] ?? []
+          if (!guid || !status) return
+
+          const image = state.images.find((img) => img.guid === guid)
+          if (image && image.status !== status) {
+            image.status = status
+          }
+        })
+
+        state.totalCountImages = state.images.length
+        state.loading = false
+        state.error = null
+      })
+      .addCase(getTasks.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload?.messageError ?? null
+      })
+
 })
 
-export const {clearImageListStore, clearError, updateImageStatus} = imageListSlice.actions
+export const {clearImageListStore, clearError, updateImageStatus, removeImageTask, removeImageTasks} = imageListSlice.actions
 export default imageListSlice.reducer

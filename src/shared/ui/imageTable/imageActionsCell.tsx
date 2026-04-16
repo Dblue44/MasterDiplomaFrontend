@@ -7,11 +7,11 @@ import {
   DropdownMenuTrigger
 } from "@shared/ui/dropdownMenu.tsx";
 import {useState} from "react";
-import {Download, EllipsisVertical, LoaderIcon, Pencil, Trash2} from "lucide-react";
+import {Download, EllipsisVertical, LoaderIcon, ScanSearch, Trash2} from "lucide-react";
 import {Button} from "@shared/ui/button.tsx";
 
-export function ImageActionsCell({guid, completed, onEdit, onSave}: ImageActionsCellProps) {
-  const [deleting, setDeleting] = useState(false);
+export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCancel}: ImageActionsCellProps) {
+  const [loading, setLoading] = useState(false);
 
   const handleEdit = () => {
     onEdit?.(guid);
@@ -21,19 +21,23 @@ export function ImageActionsCell({guid, completed, onEdit, onSave}: ImageActions
     onSave?.(guid);
   };
 
-  const onDelete = async () => {
-    setDeleting(true)
-    setTimeout(() => {
-      setDeleting(false)
-    }, 1200)
-
+  const handleDelete = () => {
+    setLoading(true);
+    onDelete?.(guid);
+    setLoading(false);
   };
+
+  const handleCancel = () => {
+    setLoading(true);
+    onCancel?.(guid);
+    setLoading(false);
+  }
 
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {deleting
+          {loading
             ?
             <div className="flex items-center justify-center size-[31px] ml-auto mr-4">
               <LoaderIcon className="animate-spin text-blue-500 w-5 h-5"/>
@@ -55,7 +59,7 @@ export function ImageActionsCell({guid, completed, onEdit, onSave}: ImageActions
           align="end"
           className="w-40"
         >
-          {completed ?
+          {status === "completed" ?
             <>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -75,19 +79,36 @@ export function ImageActionsCell({guid, completed, onEdit, onSave}: ImageActions
                 }}
                 className="flex items-center gap-2"
               >
-                <Pencil className="size-4"/>
-                Изменить
+                <ScanSearch className="size-4"/>
+                Предпросмотр
               </DropdownMenuItem>
               <DropdownMenuSeparator/>
+              <DropdownMenuItem
+                onClick={handleDelete}
+                className="text-destructive focus:text-destructive flex items-center gap-2"
+              >
+                <Trash2 className="size-4"/>
+                Удалить
+              </DropdownMenuItem>
             </>
-          : <></>}
-          <DropdownMenuItem
-            onClick={onDelete}
-            className="text-destructive focus:text-destructive flex items-center gap-2"
-          >
-            <Trash2 className="size-4"/>
-            Удалить
-          </DropdownMenuItem>
+          : status === "cancelled" ? <>
+              <DropdownMenuItem
+                onClick={handleDelete}
+                className="text-destructive focus:text-destructive flex items-center gap-2"
+              >
+                <Trash2 className="size-4"/>
+                Удалить
+              </DropdownMenuItem>
+            </> : <>
+              <DropdownMenuItem
+                onClick={handleCancel}
+                className="text-destructive focus:text-destructive flex items-center gap-2"
+              >
+                <Trash2 className="size-4"/>
+                Отменить
+              </DropdownMenuItem>
+            </>
+          }
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

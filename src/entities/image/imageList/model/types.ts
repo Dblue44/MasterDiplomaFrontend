@@ -4,5 +4,7 @@ export interface IImageListState {
   totalCountImages: number,
   images: ImageType[],
   loading: boolean,
-  error: string | null
+  error: string | null,
+  previewLoading: boolean,
+  previewError: string | null,
 }

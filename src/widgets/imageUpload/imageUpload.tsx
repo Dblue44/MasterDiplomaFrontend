@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {useAppDispatch, useAppSelector} from '@shared/lib';
-import {postImage} from '@entities/image/imageList';
+import {clearError, postImage} from '@entities/image/imageList';
 import {AlertCircleIcon, LoaderIcon} from 'lucide-react';
 import {RejectedDataType} from "@shared/types";
 import {ImageUploadProps} from "@widgets/imageUpload/types.ts";
@@ -31,6 +31,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           richColors: true,
           description: result.payload?.messageError || "Не удалось отправить фотографию",
         });
+        dispatch(clearError());
         return
       }
       onUploadSuccess?.();

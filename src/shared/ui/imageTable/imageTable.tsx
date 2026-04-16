@@ -43,8 +43,9 @@ import {columns} from "@shared/ui/imageTable";
 import {ImageType} from "@shared/api/image";
 import {useMemo} from "react";
 import {toast} from "sonner";
-import {downloadImages} from "@entities/image/imageList";
+import {downloadImages, removeImageTask, removeImageTasks, cancelImages} from "@entities/image/imageList";
 import {useAppDispatch} from "@shared/lib";
+import {backendStatuses} from "@shared/api/image/types.ts";
 
 export function ImageTable({data}: {data: ImageType[] }) {
   const dispatch = useAppDispatch();
@@ -55,46 +56,77 @@ export function ImageTable({data}: {data: ImageType[] }) {
     pageIndex: 0,
     pageSize: 10,
   })
+  const tableRef = React.useRef<ReturnType<typeof useReactTable<ImageType>> | null>(null)
+
   const iconMap: Record<string, React.ReactNode> = {
     completed: <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
     running: <LoaderIcon className="text-blue-500 size-4" />,
     queued: <ListOrderedIcon className="text-yellow-500 size-4" />,
     failed: <Ban className="text-red-500 size-4" />,
+    cancelled: <Ban className="text-yellow-500 size-4" />,
   }
 
   const openEdit = (guid: string) => {
-    toast.info("Выбран guid: " + guid)
+    const { origin } = window.location;
+    const url = `${origin}/images/${guid}`;
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
-  const onSave = async (guid: string) => {
-    const result = await dispatch(downloadImages({guids: [guid]}));
+  const onCancel = React.useCallback(async (guid: string) => {
+    const result = await dispatch(cancelImages({guids: [guid]}));
+    if (cancelImages.rejected.match(result)) {
+      toast.error("Ошибка при отмене задачи", {
+        icon: <AlertCircleIcon />,
+        richColors: true,
+        description: result.payload?.messageError || "Не удалось отменить задачу",
+      });
+    }
+  }, [dispatch]);
+
+  const onCancelMany = React.useCallback(async () => {
+    const guids = tableRef.current?.getFilteredSelectedRowModel().rows.map(e => e.original.guid) ?? []
+
+    const result = await dispatch(cancelImages({ guids }))
+    if (cancelImages.rejected.match(result)) {
+      toast.error("Ошибка при отмене задачи", {
+        icon: <AlertCircleIcon />,
+        richColors: true,
+        description: result.payload?.messageError || "Не удалось отменить задачу",
+      })
+    }
+  }, [dispatch])
+
+  const onSave = React.useCallback(async (guid: string) => {
+    const result = await dispatch(downloadImages({guids: [guid], needSave: true}));
     if (downloadImages.fulfilled.match(result)) {
       toast.info("Файл успешно загружен", {
         icon: <AlertCircleIcon />,
         richColors: true,
-      });
+      })
     }
-  }
+  }, [dispatch])
 
-  const onCancel = (guid: string) => {
-    toast.info("Выбран guid: " + guid)
-  }
-
-  const onSaveAll = async () => {
-    const data = table.getFilteredSelectedRowModel().rows
+  const onSaveMany = React.useCallback(async () => {
+    const data = tableRef.current?.getFilteredSelectedRowModel().rows ?? []
     const list = data.map(e => e.original.guid)
-    const result = await dispatch(downloadImages({guids: list}));
+
+    const result = await dispatch(downloadImages({ guids: list, needSave: true }))
     if (downloadImages.fulfilled.match(result)) {
       toast.info("Файл успешно загружен", {
         icon: <AlertCircleIcon />,
         richColors: true,
-      });
+      })
     }
-  }
+  }, [dispatch])
 
-  const onCancelAll = () => {
-    toast.info("Отмена всех выбранных")
-  }
+  const onDelete = React.useCallback((guid: string) => {
+    dispatch(removeImageTask(guid))
+  }, [dispatch])
+
+  const onDeleteMany = React.useCallback(() => {
+    const guids = tableRef.current?.getFilteredSelectedRowModel().rows.map(e => e.original.guid) ?? []
+    dispatch(removeImageTasks(guids))
+  }, [dispatch])
 
   const table = useReactTable({
     data,
@@ -111,8 +143,27 @@ export function ImageTable({data}: {data: ImageType[] }) {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    meta: useMemo(() => ({ onEdit: openEdit, onSave: onSave, onCancel: onCancel, onSaveAll: onSaveAll, onCancelAll: onCancelAll }), []),
+    meta: useMemo(() => (
+      {
+        onEdit: openEdit,
+        onSave: onSave,
+        onCancel: onCancel,
+        onDelete: onDelete,
+        onSaveMany: onSaveMany,
+        onCancelMany: onCancelMany,
+        onDeleteMany: onDeleteMany
+      }),
+      [
+        onCancel,
+        onCancelMany,
+        onDelete,
+        onDeleteMany,
+        onSave,
+        onSaveMany
+      ]),
   })
+
+  tableRef.current = table
 
   const toggleStatus = (status: string) => {
     setSelectedStatuses(prev => {
@@ -168,7 +219,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {["completed", "queued", "running", "failed"].map((status) => (
+                  {backendStatuses.options.map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
                       checked={selectedStatuses.includes(status)}

@@ -8,6 +8,7 @@ import {Fallback} from "@shared/ui/fallback";
 import {HomePage} from "@pages/home";
 import {Layout} from "@app/layout";
 import {ProcessList} from "@pages/processList";
+import {ImagePreviewPage} from "@pages/preview";
 
 export const AppRouter = () => {
 
@@ -18,6 +19,7 @@ export const AppRouter = () => {
       errorElement={<Fallback />}>
       <Route index element={<HomePage />} />
       <Route path='images' element={<ProcessList />} />
+      <Route path="images/:guid" element={<ImagePreviewPage />} />
     </Route>
   )
 

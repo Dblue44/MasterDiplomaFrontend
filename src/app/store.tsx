@@ -16,10 +16,13 @@ const rootReducer = combineReducers({
   image: imageListReducer
 })
 
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch
+
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [],
+  whitelist: ['image'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

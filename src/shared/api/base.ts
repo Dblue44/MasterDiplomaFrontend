@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios'
-import {ImagesDataType} from "@shared/api/image";
+import {ImagesDataType} from "@shared/api/image/types";
 
 export const API_URL = 'http://localhost:8085/v1'
 
@@ -16,12 +16,14 @@ export class ApiInstance {
     })
   }
 
-  async getStatus<T>(
+  async post<T>(
     endpoint: string,
+    data: string[],
     options: AxiosRequestConfig = {}
   ): Promise<T> {
-    const response: AxiosResponse<T> = await this.axios.get(
+    const response: AxiosResponse<T> = await this.axios.post(
       endpoint,
+      data,
       options
     )
     return response.data
@@ -38,6 +40,31 @@ export class ApiInstance {
       options
     )
     return response.data
+  }
+
+  async getFile(
+    endpoint: string,
+    guid: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<ImagesDataType> {
+    const response: AxiosResponse<Blob> = await this.axios.get(endpoint, {
+      params: {
+        ...(options.params as Record<string, unknown> | undefined),
+        guid,
+      },
+      responseType: "blob",
+    });
+
+    const cd = response.headers["content-disposition"] as string | undefined;
+
+    const ct =
+      (response.headers["content-type"] as string | undefined) ??
+      response.data.type ??
+      "application/octet-stream";
+
+    const filename = parseFilenameFromContentDisposition(cd) ?? `${guid}.${guessExt(ct, "png")}`;
+
+    return { blob: response.data, filename };
   }
 
   async downloadPost(

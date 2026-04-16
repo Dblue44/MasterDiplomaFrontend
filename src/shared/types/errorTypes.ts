@@ -2,6 +2,18 @@ export interface ErrorType {
   readonly message: string
   readonly response: {
     readonly status?: string
+    readonly data?: {
+      readonly detail?: string
+    }
+  }
+}
+
+export interface CancelErrorType {
+  readonly response: {
+    readonly data?: {
+      readonly result: boolean
+      readonly error?: string
+    }
   }
 }
 
