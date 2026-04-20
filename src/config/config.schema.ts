@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const configSchema = z.object({
+  API_URL: z.string().url(),
   WS_URL: z.string(),
   APP_ENABLED: z
     .enum(['true', 'false'])

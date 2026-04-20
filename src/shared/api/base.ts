@@ -1,7 +1,8 @@
+import { CONFIG } from '@/config';
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios'
 import {ImagesDataType} from "@shared/api/image/types";
 
-export const API_URL = 'http://localhost:8085/v1'
+export const API_URL = CONFIG.API_URL;
 
 export class ApiInstance {
   private axios: AxiosInstance
