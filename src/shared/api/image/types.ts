@@ -15,7 +15,7 @@ export const imageSchema = z.object({
   name: z.string(),
   status: backendStatuses,
   upscale: z.string(),
-  processTime: z.string(),
+  processTime: z.number(),
 })
 
 export type ImageType = z.infer<typeof imageSchema>
@@ -25,6 +25,16 @@ export const postImageSchema = z.object({
 })
 
 export type PostImageType = z.infer<typeof postImageSchema>
+
+export const postImageResponseSchema = z.object({
+  guid: z.string(),
+  name: z.string(),
+  status: backendStatuses,
+  upscale: z.string(),
+})
+
+export type PostImageResponseType = z.infer<typeof postImageResponseSchema>
+
 
 export const imageListTypeSchema = z.object({
   guids: z.array(

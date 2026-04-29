@@ -11,6 +11,7 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {imageListReducer} from "@entities/image/imageList";
+import {imageProcessTimeListenerMiddleware} from "@entities/image/imageList/model/processTimeListener.ts";
 
 const rootReducer = combineReducers({
   image: imageListReducer
@@ -41,7 +42,7 @@ const store = configureStore({
           REGISTER,
         ],
       },
-    }),
+    }).concat(imageProcessTimeListenerMiddleware.middleware),
 })
 
 export const persistor = persistStore(store)

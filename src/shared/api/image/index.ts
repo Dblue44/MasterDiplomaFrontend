@@ -1,6 +1,7 @@
 export {
   type ImageType,
   type PostImageType,
+  postImageSchema,
   imageSchema,
   type ImageListType,
   type DownloadImageListType,
@@ -12,5 +13,7 @@ export {
   type ImagePreviewPayload,
   type ImagesCancelResult,
   type GetTasksResponse,
+  type PostImageResponseType,
+  postImageResponseSchema
 } from './types'
 export {getResultsPostImage, getOriginalImage, getTasksStatuses} from './requests.ts'

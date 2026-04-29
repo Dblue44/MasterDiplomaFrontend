@@ -1,44 +1,11 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {postImage, getPreviewImages, getTasks} from "@entities/image/imageList/model/imageListThunk.ts";
 import {IImageListState} from "@entities/image/imageList";
-import {ImageType} from "@shared/api/image";
-import {getSocket} from "@shared/lib";
 import {UpdateImageStatusType} from "@shared/api/image/types.ts";
-
-const data: ImageType[] = [
-  {
-    guid: "null1",
-    name: "file1.png",
-    status: "completed",
-    upscale: "2x",
-    processTime: "15s",
-  },
-  {
-    guid: "null2",
-    name: "file2.png",
-    status: "queued",
-    upscale: "2x",
-    processTime: "17s",
-  },
-  {
-    guid: "null3",
-    name: "file1.png",
-    status: "running",
-    upscale: "2x",
-    processTime: "1m",
-  },
-  {
-    guid: "null4",
-    name: "file3.png",
-    status: "failed",
-    upscale: "4x",
-    processTime: "-",
-  }
-]
 
 const initialState: IImageListState = {
   totalCountImages: 17,
-  images: data,
+  images: [],
   loading: false,
   error: null,
   previewLoading: false,
@@ -64,6 +31,15 @@ const imageListSlice = createSlice({
     removeImageTasks: (state, action: PayloadAction<string[]>) => {
       state.images = state.images.filter(el => !action.payload.includes(el.guid));
     },
+    incrementImageProcessTime: (
+      state,
+      action: PayloadAction<{ readonly guid: string; readonly seconds: number }>
+    ) => {
+      const img = state.images.find((i) => i.guid === action.payload.guid);
+      if (img && (img.status === "queued" || img.status === "running")) {
+        img.processTime += action.payload.seconds;
+      }
+    },
     updateImageStatus: (
       state,
       action: PayloadAction<UpdateImageStatusType>
@@ -86,12 +62,6 @@ const imageListSlice = createSlice({
         state.totalCountImages = state.images.length
         state.loading = false
         state.error = null
-
-        const ws = getSocket();
-
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ type: "subscribe", guids: state.images.map(i => i.guid) }));
-        }
       })
       .addCase(postImage.rejected, (state, action) => {
         state.loading = false
@@ -135,5 +105,5 @@ const imageListSlice = createSlice({
 
 })
 
-export const {clearImageListStore, clearError, updateImageStatus, removeImageTask, removeImageTasks} = imageListSlice.actions
+export const {clearImageListStore, clearError, updateImageStatus, removeImageTask, removeImageTasks, incrementImageProcessTime} = imageListSlice.actions
 export default imageListSlice.reducer

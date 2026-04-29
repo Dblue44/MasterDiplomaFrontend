@@ -38,7 +38,13 @@ export class ApiInstance {
     const response: AxiosResponse<T> = await this.axios.post(
       endpoint,
       formData,
-      options
+      {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     )
     return response.data
   }

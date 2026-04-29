@@ -1,12 +1,17 @@
 import {apiInstance} from "@shared/api";
 import {
-  PostImageType, ImageType, ImageListType, ImagesDataType, OriginalImageRequest, GetTasksResponse, ImagesCancelResult
+  PostImageType, ImageListType, ImagesDataType, OriginalImageRequest, GetTasksResponse, ImagesCancelResult,
+  PostImageResponseType, postImageResponseSchema
 } from "@shared/api/image";
 
-export const getResultsPostImage = ({file}: PostImageType): Promise<ImageType> => {
+export const getResultsPostImage = async ({file}: PostImageType): Promise<PostImageResponseType> => {
   const formData = new FormData()
   formData.append('file', file)
-  return apiInstance.postImage<ImageType>(`/upload`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+  formData.append("scale", "2")
+
+  const data = await apiInstance.postImage<unknown>(`/upload`, formData)
+
+  return postImageResponseSchema.parse(data)
 }
 
 export const downloadImageList = ({guids}: ImageListType): Promise<ImagesDataType> => {

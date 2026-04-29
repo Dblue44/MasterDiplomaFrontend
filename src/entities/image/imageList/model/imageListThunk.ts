@@ -11,31 +11,41 @@ import {
   ImagePreviewPayload,
   ImageUrlPayload,
   ImagesCancelResult,
-  GetTasksResponse
+  GetTasksResponse,
+  postImageSchema
 } from "@shared/api/image";
 import {cancelImageList, downloadImageList, getTasksStatuses} from "@shared/api/image/requests.ts";
 import {CancelErrorType} from "@shared/types/errorTypes.ts";
+import {z} from "zod";
 
 export const postImage = createAsyncThunk<
   ImageType,
   PostImageType,
   { readonly rejectValue: RejectedDataType }
->('image/postImage', async ({file}, thunkAPI) => {
+>('image/postImage', async (payload, thunkAPI) => {
   try {
+    const { file } = postImageSchema.parse(payload)
+
     const {guid, name, status, upscale} = await getResultsPostImage({file})
-    const newImage: ImageType = {
+
+    return {
       guid: guid,
       name: name,
       status: status,
       upscale: upscale,
-      processTime: "1m",
+      processTime: 0,
     };
-    return newImage
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      return thunkAPI.rejectWithValue({
+        messageError: "Некорректные данные изображения",
+      })
+    }
+
     const knownError = err as ErrorType
 
     return thunkAPI.rejectWithValue({
-      messageError: knownError.response.data?.detail ?? "Unknown error",
+      messageError: knownError.response?.data?.detail ?? knownError.message ?? "Unknown error",
       status: knownError.response?.status,
     })
   }

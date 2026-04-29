@@ -10,6 +10,15 @@ import {ImageTableMeta} from "@shared/ui/imageTable/types.ts";
 import {TextShimmer} from "@shared/ui/textShimmer.tsx";
 import {ImageTableActions} from "@shared/ui/imageTable/imageTableActions.tsx";
 
+const formatProcessTime = (seconds: number) => {
+  if (seconds < 60) return `${seconds}s`;
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return remainingSeconds === 0 ? `${minutes}m` : `${minutes}m${remainingSeconds}s`;
+};
+
 export const columns: ColumnDef<ImageType>[] = [
   {
     id: "select",
@@ -84,7 +93,7 @@ export const columns: ColumnDef<ImageType>[] = [
     header: "Process time",
     cell: ({row}) => (
       <Badge variant="outline" className="px-1.5 text-muted-foreground">
-        {row.original.processTime}
+        {formatProcessTime(row.original.processTime)}
       </Badge>
     ),
     enableHiding: true,

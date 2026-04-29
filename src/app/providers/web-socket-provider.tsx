@@ -13,7 +13,7 @@ export const WebSocketProvider: FC<{ children: JSX.Element }> = ({ children }) =
   const guids = useAppSelector(selectImageListImagesGuid);
 
   const wsRef = useRef<WebSocket | null>(null);
-  const guidsRef = useRef<string[]>([]);
+  const guidsRef = useRef<string[]>(guids ?? []);
   const lastSigRef = useRef<string>("");
 
   const sendSubscribe = useCallback(() => {
