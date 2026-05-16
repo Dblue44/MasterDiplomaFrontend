@@ -4,12 +4,22 @@ import { ArrowLeft, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "@shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/card";
 import { Skeleton } from "@shared/ui/skeleton";
+import { Badge } from "@shared/ui/badge";
 import type { HoverState, LoadedImages, PreviewImageProps } from "./types";
 import { FloatingZoom } from "./floatingZoom";
 import { getPreviewImages } from "@entities/image/imageList";
 import { useAppDispatch, useAppSelector } from "@shared/lib";
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+
+const formatProcessTime = (seconds: number) => {
+  if (seconds < 60) return `${seconds}s`;
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return remainingSeconds === 0 ? `${minutes}m` : `${minutes}m ${remainingSeconds}s`;
+};
 
 const PreviewImage = React.memo(function PreviewImage({
   src,
@@ -64,11 +74,12 @@ export const PreviewWidget = () => {
 
   const previewLoading = useAppSelector((s) => s.image.previewLoading);
   const previewError = useAppSelector((s) => s.image.previewError);
+  const task = useAppSelector((s) => s.image.images.find((image) => image.guid === guid));
 
   const [images, setImages] = React.useState<LoadedImages | null>(null);
 
   // ====== Settings ======
-  const ZOOM = 30;
+  const ZOOM = 6;
   const PANE_SIZE_PX = 180;
 
   const LENS_SIZE_PX = Math.round(PANE_SIZE_PX / Math.max(1, ZOOM));
@@ -92,6 +103,8 @@ export const PreviewWidget = () => {
         setImages({
           originalUrl: response.urlOriginal,
           resultUrl: response.urlResult,
+          filenameOriginal: response.filenameOriginal,
+          filenameResult: response.filenameResult,
         });
       } catch (e) {
         console.error("Preview load failed:", e);
@@ -143,6 +156,9 @@ export const PreviewWidget = () => {
   );
 
   const isLoading = previewLoading || !images;
+  const fileName = task?.name ?? images?.filenameOriginal;
+  const scale = task?.upscale;
+  const processTime = task?.processTime;
 
   return (
     <div className="flex flex-col gap-6 p-4 lg:p-6">
@@ -154,8 +170,7 @@ export const PreviewWidget = () => {
           </Button>
 
           <div className="flex flex-col">
-            <div className="text-sm text-muted-foreground">Предпросмотр</div>
-            <div className="font-semibold">{guid ? `Задача: ${guid}` : "Задача"}</div>
+            <div className="text-lg text-muted-foreground">Предпросмотр</div>
           </div>
         </div>
 
@@ -184,9 +199,32 @@ export const PreviewWidget = () => {
           originalSrc={images.originalUrl}
           resultSrc={images.resultUrl}
           zoom={ZOOM}
-          paneSizePx={250}
+          paneSizePx={PANE_SIZE_PX}
         />
       )}
+
+      <div className="flex flex-wrap items-center gap-2">
+        {fileName && (
+          <>
+            <span style={{fontFamily: "Manrope, sans-serif", fontWeight: 600}}>File name: </span>
+            <Badge variant="outline" className="max-w-full px-2 py-1 text-md"><span className="truncate">{fileName}</span></Badge>
+          </>
+
+        )}
+        {scale && (
+          <div className="ml-6">
+            <span style={{fontFamily: "Manrope, sans-serif", fontWeight: 600}}>Scale: </span>
+            <Badge variant="outline" className="px-2 py-1 text-md">{scale}</Badge>
+          </div>
+        )}
+        {typeof processTime === "number" && (
+          <div className="ml-6">
+            <span style={{fontFamily: "Manrope, sans-serif", fontWeight: 600}}>Process time: </span>
+            <Badge variant="outline" className="px-2 py-1 text-md">{formatProcessTime(processTime)}</Badge>
+          </div>
+
+        )}
+      </div>
 
       <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
         <Card className="border">

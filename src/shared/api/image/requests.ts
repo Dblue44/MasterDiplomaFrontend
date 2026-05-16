@@ -4,10 +4,10 @@ import {
   PostImageResponseType, postImageResponseSchema
 } from "@shared/api/image";
 
-export const getResultsPostImage = async ({file}: PostImageType): Promise<PostImageResponseType> => {
+export const getResultsPostImage = async ({file, scale}: PostImageType): Promise<PostImageResponseType> => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append("scale", "2")
+  formData.append("scale", scale)
 
   const data = await apiInstance.postImage<unknown>(`/upload`, formData)
 

@@ -7,13 +7,19 @@ import {
   DropdownMenuTrigger
 } from "@shared/ui/dropdownMenu.tsx";
 import {useState} from "react";
-import {Download, EllipsisVertical, LoaderIcon, Pencil, Trash2} from "lucide-react";
+import {Ban, Download, EllipsisVertical, LoaderIcon, Trash2} from "lucide-react";
 import {Button} from "@shared/ui/button.tsx";
 
 export function ImageTableActions({selectedRows, onSaveMany, onCancelMany, onDeleteMany, isAnySelected}: ImageTableActionsProps) {
   const [loading, setLoading] = useState(false);
-  const [isAllTasksCompleted, setIsAllTasksCompleted] = useState(true);
-  const [isAnyTakRunning, setIsAnyTakRunning] = useState(false);
+  const canDownload = selectedRows.every(el => el.status === "completed");
+  const canCancel = selectedRows.every(el => el.status === "queued" || el.status === "running");
+  const canDelete = selectedRows.every(el => (
+    el.status === "completed" ||
+    el.status === "cancelled" ||
+    el.status === "failed"
+  ));
+  const hasAvailableActions = canDownload || canCancel || canDelete;
 
   const handleDownload = () => {
     setLoading(true);
@@ -33,16 +39,8 @@ export function ImageTableActions({selectedRows, onSaveMany, onCancelMany, onDel
     setLoading(false);
   };
 
-  if (!isAnySelected) {
+  if (!isAnySelected || !hasAvailableActions) {
     return <></>
-  }
-
-  if (selectedRows.find(el => el.status !== "completed")) {
-    setIsAllTasksCompleted(false);
-  }
-
-  if (selectedRows.find(el => el.status === "running")) {
-    setIsAnyTakRunning(true);
   }
 
   return (
@@ -71,7 +69,7 @@ export function ImageTableActions({selectedRows, onSaveMany, onCancelMany, onDel
           align="end"
           className="w-40"
         >
-          {isAllTasksCompleted ?
+          {canDownload ?
             <>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -86,7 +84,7 @@ export function ImageTableActions({selectedRows, onSaveMany, onCancelMany, onDel
               <DropdownMenuSeparator/>
             </> : <></>
           }
-          {isAnyTakRunning ?
+          {canCancel ?
             <>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -95,22 +93,23 @@ export function ImageTableActions({selectedRows, onSaveMany, onCancelMany, onDel
                 }}
                 className="flex items-center gap-2"
               >
-                <Pencil className="size-4"/>
+                <Ban className="size-4"/>
                 Отменить
               </DropdownMenuItem>
-              <DropdownMenuSeparator/>
             </> : <></>
           }
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete();
-            }}
-            className="text-destructive focus:text-destructive flex items-center gap-2"
-          >
-            <Trash2 className="size-4"/>
-            Удалить
-          </DropdownMenuItem>
+          {canDelete ?
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              className="text-destructive focus:text-destructive flex items-center gap-2"
+            >
+              <Trash2 className="size-4"/>
+              Удалить
+            </DropdownMenuItem> : <></>
+          }
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

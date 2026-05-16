@@ -16,3 +16,4 @@ export const selectImageListImagesGuid = createSelector(
   selectBase,
   (state: IImageListState)=> state.images?.map((i) => i.guid)
 )
+

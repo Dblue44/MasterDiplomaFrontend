@@ -7,11 +7,16 @@ import {
   DropdownMenuTrigger
 } from "@shared/ui/dropdownMenu.tsx";
 import {useState} from "react";
-import {Download, EllipsisVertical, LoaderIcon, ScanSearch, Trash2} from "lucide-react";
+import {Ban, Download, EllipsisVertical, LoaderIcon, ScanSearch, Trash2} from "lucide-react";
 import {Button} from "@shared/ui/button.tsx";
 
 export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCancel}: ImageActionsCellProps) {
   const [loading, setLoading] = useState(false);
+  const canCancel = status === "queued" || status === "running";
+  const canDownload = status === "completed";
+  const canPreview = status === "completed";
+  const canDelete = status === "completed" || status === "cancelled" || status === "failed";
+  const hasAvailableActions = canCancel || canDownload || canPreview || canDelete;
 
   const handleEdit = () => {
     onEdit?.(guid);
@@ -31,6 +36,10 @@ export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCanc
     setLoading(true);
     onCancel?.(guid);
     setLoading(false);
+  }
+
+  if (!hasAvailableActions) {
+    return <></>
   }
 
   return (
@@ -59,7 +68,7 @@ export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCanc
           align="end"
           className="w-40"
         >
-          {status === "completed" ?
+          {canDownload ?
             <>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -72,6 +81,10 @@ export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCanc
                 Скачать
               </DropdownMenuItem>
               <DropdownMenuSeparator/>
+            </> : <></>
+          }
+          {canPreview ?
+            <>
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();
@@ -83,31 +96,35 @@ export function ImageActionsCell({guid, status, onEdit, onSave, onDelete, onCanc
                 Предпросмотр
               </DropdownMenuItem>
               <DropdownMenuSeparator/>
+            </> : <></>
+          }
+          {canCancel ?
+            <>
               <DropdownMenuItem
-                onClick={handleDelete}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancel();
+                }}
                 className="text-destructive focus:text-destructive flex items-center gap-2"
               >
-                <Trash2 className="size-4"/>
-                Удалить
-              </DropdownMenuItem>
-            </>
-          : status === "cancelled" ? <>
-              <DropdownMenuItem
-                onClick={handleDelete}
-                className="text-destructive focus:text-destructive flex items-center gap-2"
-              >
-                <Trash2 className="size-4"/>
-                Удалить
-              </DropdownMenuItem>
-            </> : <>
-              <DropdownMenuItem
-                onClick={handleCancel}
-                className="text-destructive focus:text-destructive flex items-center gap-2"
-              >
-                <Trash2 className="size-4"/>
+                <Ban className="size-4"/>
                 Отменить
               </DropdownMenuItem>
-            </>
+            </> : <></>
+          }
+          {canDelete ?
+            <>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+                className="text-destructive focus:text-destructive flex items-center gap-2"
+              >
+                <Trash2 className="size-4"/>
+                Удалить
+              </DropdownMenuItem>
+            </> : <></>
           }
         </DropdownMenuContent>
       </DropdownMenu>

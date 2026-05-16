@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-export const backendStatuses = z.enum(["queued", "running", "completed", "cancelled", "failed"])
+export const backendStatuses = z.enum(["queued", "running", "completed", "cancelled", "cancel_requested", "failed"])
 
 export const statusEnumSchema = z.object({
   guid: z.string(),
@@ -22,6 +22,7 @@ export type ImageType = z.infer<typeof imageSchema>
 
 export const postImageSchema = z.object({
   file: z.instanceof(File),
+  scale: z.enum(["2", "4"]),
 })
 
 export type PostImageType = z.infer<typeof postImageSchema>

@@ -181,11 +181,12 @@ export function ImageTable({data}: {data: ImageType[] }) {
 
   return (
     <Tabs defaultValue="photo" >
-      <div className="flex w-full flex-col justify-start gap-6 border rounded-lg">
+      <div className="flex w-full flex-col justify-start gap-6 border rounded-3xl">
         <TabsContent value="photo" className="relative flex flex-col gap-4 overflow-auto p-4 lg:px-6">
           <div className="flex items-center justify-between px-4 py-2">
             <Input
               placeholder="Filter names..."
+              style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}
               value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
@@ -214,7 +215,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
               {/*</Select>*/}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-[130px]">
+                  <Button variant="outline" className="w-[130px]" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                     Filter Status
                   </Button>
                 </DropdownMenuTrigger>
@@ -243,7 +244,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
+                        <TableHead key={header.id}  style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -278,6 +279,7 @@ export function ImageTable({data}: {data: ImageType[] }) {
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center"
+                      style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}
                     >
                       No results.
                     </TableCell>
@@ -287,13 +289,13 @@ export function ImageTable({data}: {data: ImageType[] }) {
             </Table>
           </div>
           <div className="flex items-center justify-between px-4">
-            <div className="hidden flex-1 text-sm text-muted-foreground  mr-25 lg:flex">
+            <div className="hidden flex-1 text-sm text-muted-foreground  mr-25 lg:flex" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
               {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
               selected.
             </div>
             <div className="flex w-full items-center gap-8 lg:w-fit">
               <div className="hidden items-center gap-2 lg:flex">
-                <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                <Label htmlFor="rows-per-page" className="text-sm font-medium" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                   Rows per page
                 </Label>
                 <Select
@@ -302,19 +304,19 @@ export function ImageTable({data}: {data: ImageType[] }) {
                     table.setPageSize(Number(value))
                   }}
                 >
-                  <SelectTrigger className="w-20" id="rows-per-page">
+                  <SelectTrigger className="w-20" id="rows-per-page" style={{ fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                     <SelectValue placeholder={table.getState().pagination.pageSize}/>
                   </SelectTrigger>
-                  <SelectContent side="top">
+                  <SelectContent side="bottom" className="min-w-20 w-20">
                     {[10, 20, 30].map((pageSize) => (
-                      <SelectItem key={pageSize} value={`${pageSize}`}>
+                      <SelectItem key={pageSize} value={`${pageSize}`} style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                         {pageSize}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex w-fit items-center justify-center text-sm font-medium">
+              <div className="flex w-fit items-center justify-center text-sm font-medium" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                 Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
               </div>
               <div className="ml-auto flex items-center gap-2 lg:ml-0">

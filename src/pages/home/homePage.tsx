@@ -46,6 +46,7 @@ export const HomePage = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        style={{fontFamily: "Manrope, sans-serif"}}
       >
         <motion.section variants={fadeUpItem}>
           <ProductInfo />

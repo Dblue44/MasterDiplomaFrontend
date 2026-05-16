@@ -61,13 +61,13 @@ export function BeforeAfterSlider({
       </div>
 
       <div
-        className="ba-handle absolute top-0 bottom-0 w-px bg-white cursor-ew-resize"
+        className="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize"
         style={{ left: `${position}%` }}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >
         <div className="w-5 h-5 bg-amber-50 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-          <ChevronsLeftRight className="text-black" size={18} />
+          <ChevronsLeftRight className="text-black" size={16} />
         </div>
       </div>
     </div>

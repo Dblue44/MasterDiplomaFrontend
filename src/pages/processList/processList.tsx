@@ -31,7 +31,7 @@ export const ProcessList = () => {
             navigate("/images");
           }}
         />
-        <div className="flex items-center gap-6 rounded-md p-4">
+        <div className="flex items-center gap-6 rounded-md p-4" style={{fontFamily: "Manrope, sans-serif"}}>
           <ImageTable data={data}/>
         </div>
       </div>

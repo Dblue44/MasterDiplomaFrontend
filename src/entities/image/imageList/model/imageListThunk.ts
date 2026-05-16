@@ -24,9 +24,9 @@ export const postImage = createAsyncThunk<
   { readonly rejectValue: RejectedDataType }
 >('image/postImage', async (payload, thunkAPI) => {
   try {
-    const { file } = postImageSchema.parse(payload)
+    const { file, scale } = postImageSchema.parse(payload)
 
-    const {guid, name, status, upscale} = await getResultsPostImage({file})
+    const {guid, name, status, upscale} = await getResultsPostImage({file, scale})
 
     return {
       guid: guid,

@@ -11,17 +11,17 @@ const steps = [
   {
     icon: Upload,
     title: "Загрузите фото",
-    description: "Выберите изображение любого формата и размера"
+    description: "Выберите изображение низкого разрешения"
   },
   {
     icon: Sparkles,
     title: "AI улучшает детали",
-    description: "Наш алгоритм анализирует и восстанавливает детали"
+    description: "Наш алгоритм анализирует фотографию, восстанавливает детали и увеличивает разрешение"
   },
   {
     icon: Download,
     title: "Скачайте результат",
-    description: "Получите четкое изображение высокого разрешения"
+    description: "Получите изображение высокого разрешения"
   }
 ];
 
@@ -87,7 +87,7 @@ export function ProductInfo() {
             const Icon = icon;
             return (
               <motion.div key={index} variants={blockItem}>
-                <Card className="text-center hover:shadow-lg transition-shadow dark:shadow-none bg-background">
+                <Card className="text-center hover:shadow-lg transition-shadow dark:shadow-none bg-background h-100">
                   <CardContent className="pb-8 pt-6">
                     <CardDecorator>
                       <Icon className="size-6" aria-hidden />

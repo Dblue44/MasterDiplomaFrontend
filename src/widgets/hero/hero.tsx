@@ -54,6 +54,7 @@ export function Hero() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         className="container mx-auto text-center max-w-4xl"
+        style={{fontFamily: "Manrope, sans-serif"}}
       >
         <motion.h1
           variants={item}
@@ -61,15 +62,16 @@ export function Hero() {
         >
           {/* Невидимый «призрак» — резервирует высоту под 1–2 строки */}
           <span aria-hidden className="invisible block">
-            Увеличим качество ваших фото с помощью AI
+            Увеличим разрешение ваших фото с помощью AI
           </span>
 
           <span className="absolute inset-0 w-full text-center">
             <TextType
-              text={["Увеличим качество ваших фото с помощью AI"]}
+              text={["Увеличим разрешение ваших фото с помощью AI"]}
               typingSpeed={30}
               showCursor={false}
               textColors={textColors}
+              style={{fontFamily: "Manrope, sans-serif"}}
             />
           </span>
         </motion.h1>
@@ -79,7 +81,7 @@ export function Hero() {
           className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
         >
           Превратите размытые снимки в четкие изображения высокого разрешения
-          с помощью нашего передового алгоритма искусственного интеллекта
+          с помощью нашей модели нейронной сети
         </motion.p>
 
         <motion.div
@@ -107,7 +109,7 @@ export function Hero() {
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <ChevronsDown className="h-4 w-4" />
-              Информация о продукте
+              Информация о сервисе
             </div>
           </motion.div>
         </motion.div>

@@ -9,9 +9,9 @@ export const FloatingZoom = React.memo(function FloatingZoom({
   yPct,
   originalSrc,
   resultSrc,
-  zoom = 1,
+  zoom = 4,
   paneSizePx = 180,
-  gapPx = 20,
+  gapPx = 12,
 }: FloatingZoomProps) {
   if (!active) return null;
 
@@ -20,6 +20,7 @@ export const FloatingZoom = React.memo(function FloatingZoom({
 
   const offset = 15;
   const totalWidth = paneSizePx * 2 + gapPx;
+  const spacerPx = Math.max(0, gapPx - 8);
 
   const left =
     clientX + offset + totalWidth > viewportW
@@ -33,7 +34,7 @@ export const FloatingZoom = React.memo(function FloatingZoom({
 
   const Pane = (src: string, label: string) => (
     <div className="flex flex-col gap-1">
-      <div className="text-[20px] text-muted-foreground">{label}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
       <div
         className="overflow-hidden rounded-md border bg-muted/30 shadow-sm"
         style={{
@@ -43,6 +44,7 @@ export const FloatingZoom = React.memo(function FloatingZoom({
           backgroundRepeat: "no-repeat",
           backgroundSize: `${zoom * 100}% ${zoom * 100}%`,
           backgroundPosition: `${xPct * 100}% ${yPct * 100}%`,
+          imageRendering: "pixelated",
         }}
       />
     </div>
@@ -52,7 +54,7 @@ export const FloatingZoom = React.memo(function FloatingZoom({
     <div className="pointer-events-none z-50" style={{ position: "fixed", left, top }}>
       <div className="flex items-start gap-2 rounded-lg border bg-background/80 p-2 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
         {Pane(originalSrc, "Оригинал")}
-        <div style={{ width: gapPx }} />
+        <div style={{ width: spacerPx }} />
         {Pane(resultSrc, "Результат")}
       </div>
     </div>

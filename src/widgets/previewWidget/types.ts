@@ -7,6 +7,8 @@ import { z } from "zod";
 export const LoadedImagesSchema = z.object({
   originalUrl: z.string().min(1),
   resultUrl: z.string().min(1),
+  filenameOriginal: z.string().min(1),
+  filenameResult: z.string().min(1),
 });
 
 export type LoadedImages = z.infer<typeof LoadedImagesSchema>;

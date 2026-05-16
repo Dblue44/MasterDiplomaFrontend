@@ -4,8 +4,15 @@ import {IImageListState} from "@entities/image/imageList";
 import {UpdateImageStatusType} from "@shared/api/image/types.ts";
 
 const initialState: IImageListState = {
-  totalCountImages: 17,
-  images: [],
+  totalCountImages: 25,
+  images: [
+    {guid: "test-task-001", name: "mountain-lake.jpg", status: "running", upscale: "x2", processTime: 30},
+    {guid: "test-task-002", name: "city-night.png", status: "queued", upscale: "x4", processTime: 15},
+    {guid: "f286a806-84c5-42a6-ac75-e259a13ca42e", name: "product-watch.png", status: "completed", upscale: "x4", processTime: 112},
+    {guid: "test-task-005", name: "old-photo-scan.png", status: "failed", upscale: "x2", processTime: 46},
+    {guid: "test-task-006", name: "forest-path.jpg", status: "cancelled", upscale: "x4", processTime: 5},
+    {guid: "test-task-007", name: "apartment-render.png", status: "completed", upscale: "x2", processTime: 54}
+  ],
   loading: false,
   error: null,
   previewLoading: false,
@@ -21,6 +28,8 @@ const imageListSlice = createSlice({
       state.images = [];
       state.loading = false;
       state.error = null;
+      state.previewLoading = false;
+      state.previewError = null;
     },
     clearError: (state) => {
       state.error = null;

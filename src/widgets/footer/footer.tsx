@@ -1,4 +1,6 @@
 import { Github } from "lucide-react";
+import {Link} from "react-router-dom";
+
 import {Separator} from "@shared/ui/separator.tsx";
 
 export function Footer() {
@@ -17,7 +19,9 @@ export function Footer() {
               <span className="font-bold text-xl">SuperRes</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              Профессиональное улучшение качества изображений с помощью искусственного интеллекта
+              Улучшение разрешения ваших изображений
+              <br />
+              при помощи искусственного интеллекта
             </p>
           </div>
 
@@ -26,19 +30,19 @@ export function Footer() {
             <h3 className="font-semibold">Навигация</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
                   Политика конфиденциальности
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
                   Условия использования
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/contacts" className="text-muted-foreground hover:text-foreground transition-colors">
                   Контакты
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

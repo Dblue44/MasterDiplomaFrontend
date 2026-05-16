@@ -56,7 +56,7 @@ export const columns: ColumnDef<ImageType>[] = [
     header: "Upscale",
 
     cell: ({row}) => (
-      <Badge variant="outline" className="px-1.5 text-muted-foreground">
+      <Badge variant="outline" className="px-1.5 text-muted-foreground text-sm" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
         {row.original.upscale}
       </Badge>
     ),
@@ -77,10 +77,11 @@ export const columns: ColumnDef<ImageType>[] = [
         queued: <ListOrderedIcon className="text-yellow-500 size-4" />,
         failed: <Ban className="text-red-500 size-4" />,
         cancelled: <Ban className="text-yellow-500 size-4" />,
+        cancel_requested: <LoaderIcon className="animate-spin text-red-500 size-4" />,
       }
 
       return (
-        <Badge variant="outline" className="flex items-center gap-1 px-1.5 text-muted-foreground">
+        <Badge variant="outline" className="flex items-center gap-1 px-1.5 text-muted-foreground text-sm" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
           {iconMap[status]}
           {status === "running" ? <TextShimmer>{status}</TextShimmer> : status}
         </Badge>
@@ -92,7 +93,7 @@ export const columns: ColumnDef<ImageType>[] = [
     accessorKey: "processTime",
     header: "Process time",
     cell: ({row}) => (
-      <Badge variant="outline" className="px-1.5 text-muted-foreground">
+      <Badge variant="outline" className="px-1.5 text-muted-foreground text-sm" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
         {formatProcessTime(row.original.processTime)}
       </Badge>
     ),
