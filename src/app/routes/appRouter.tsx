@@ -5,14 +5,22 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom'
+import {JSX, lazy, Suspense} from 'react'
 import {Fallback} from "@shared/ui/fallback";
-import {HomePage} from "@pages/home";
 import {Layout} from "@app/layout";
-import {ProcessList} from "@pages/processList";
-import {ImagePreviewPage} from "@pages/preview";
-import {PrivacyPage} from "@pages/privacy";
-import {TermsPage} from "@pages/terms";
-import {ContactsPage} from "@pages/contacts";
+
+const HomePage = lazy(() => import("@pages/home").then((module) => ({ default: module.HomePage })));
+const ProcessList = lazy(() => import("@pages/processList").then((module) => ({ default: module.ProcessList })));
+const ImagePreviewPage = lazy(() => import("@pages/preview").then((module) => ({ default: module.ImagePreviewPage })));
+const PrivacyPage = lazy(() => import("@pages/privacy").then((module) => ({ default: module.PrivacyPage })));
+const TermsPage = lazy(() => import("@pages/terms").then((module) => ({ default: module.TermsPage })));
+const ContactsPage = lazy(() => import("@pages/contacts").then((module) => ({ default: module.ContactsPage })));
+
+const routeElement = (element: JSX.Element) => (
+  <Suspense fallback={null}>
+    {element}
+  </Suspense>
+);
 
 export const AppRouter = () => {
 
@@ -21,12 +29,12 @@ export const AppRouter = () => {
       path='/'
       element={<Layout />}
       errorElement={<Fallback />}>
-      <Route index element={<HomePage />} />
-      <Route path='images' element={<ProcessList />} />
-      <Route path="images/:guid" element={<ImagePreviewPage />} />
-      <Route path="privacy" element={<PrivacyPage />} />
-      <Route path="terms" element={<TermsPage />} />
-      <Route path="contacts" element={<ContactsPage />} />
+      <Route index element={routeElement(<HomePage />)} />
+      <Route path='images' element={routeElement(<ProcessList />)} />
+      <Route path="images/:guid" element={routeElement(<ImagePreviewPage />)} />
+      <Route path="privacy" element={routeElement(<PrivacyPage />)} />
+      <Route path="terms" element={routeElement(<TermsPage />)} />
+      <Route path="contacts" element={routeElement(<ContactsPage />)} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Route>
   )

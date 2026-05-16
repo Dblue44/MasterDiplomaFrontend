@@ -1,8 +1,7 @@
 import {Hero} from "@widgets/hero";
 import {ProductInfo} from "@widgets/productInfo";
 import {Toaster} from "@shared/ui/sonner.tsx";
-import { motion } from "framer-motion";
-import {stagger, Variants} from "motion";
+import {motion, stagger, Variants} from "framer-motion";
 import {Meteors} from "@shared/ui/meteors.tsx";
 
 const gridContainer: Variants = {

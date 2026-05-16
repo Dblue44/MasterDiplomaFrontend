@@ -6,12 +6,7 @@ const configSchema = z.object({
   APP_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
-    .transform((value) => value === 'true'),
-  IP_RESTRICTION_ENABLED: z
-    .enum(['true', 'false'])
-    .default('false')
-    .transform((value) => value === 'true'),
-  ALLOWED_IP: z.string().optional().default(''),
+    .transform((value) => value === 'true')
 });
 
 export const parseConfig = (configObj: Record<string, unknown>) => {

@@ -92,12 +92,14 @@ export const PreviewWidget = () => {
     if (!guid) return;
 
     let alive = true;
+    let objectUrls: string[] = [];
 
     const run = async () => {
       setImages(null);
 
       try {
         const response = (await dispatch(getPreviewImages({ guid })).unwrap());
+        objectUrls = [response.urlOriginal, response.urlResult];
         if (!alive) return;
 
         setImages({
@@ -115,6 +117,7 @@ export const PreviewWidget = () => {
 
     return () => {
       alive = false;
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [guid, dispatch]);
 

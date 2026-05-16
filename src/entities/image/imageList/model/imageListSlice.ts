@@ -8,10 +8,10 @@ const initialState: IImageListState = {
   images: [
     {guid: "test-task-001", name: "mountain-lake.jpg", status: "running", upscale: "x2", processTime: 30},
     {guid: "test-task-002", name: "city-night.png", status: "queued", upscale: "x4", processTime: 15},
-    {guid: "f286a806-84c5-42a6-ac75-e259a13ca42e", name: "product-watch.png", status: "completed", upscale: "x4", processTime: 112},
-    {guid: "test-task-005", name: "old-photo-scan.png", status: "failed", upscale: "x2", processTime: 46},
-    {guid: "test-task-006", name: "forest-path.jpg", status: "cancelled", upscale: "x4", processTime: 5},
-    {guid: "test-task-007", name: "apartment-render.png", status: "completed", upscale: "x2", processTime: 54}
+    {guid: "test-task-003", name: "product-watch.png", status: "completed", upscale: "x4", processTime: 112},
+    {guid: "test-task-004", name: "old-photo-scan.png", status: "failed", upscale: "x2", processTime: 46},
+    {guid: "test-task-005", name: "forest-path.jpg", status: "cancelled", upscale: "x4", processTime: 5},
+    {guid: "test-task-006", name: "apartment-render.png", status: "completed", upscale: "x2", processTime: 54}
   ],
   loading: false,
   error: null,

@@ -3,8 +3,7 @@ import {Card, CardContent} from "@shared/ui/card.tsx";
 import {Badge} from "@shared/ui/badge.tsx";
 import {BeforeAfterSlider} from "@widgets/beforeAfterSlider";
 import {ReactNode} from "react";
-import {stagger, Variants} from "motion";
-import { motion } from "framer-motion";
+import {motion, stagger, Variants} from "framer-motion";
 
 
 const steps = [
