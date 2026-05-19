@@ -25,3 +25,8 @@ dist-ssr
 /qodana.yaml
 
 .env
+.agents
+.claude
+.windsurf
+
+codex.md

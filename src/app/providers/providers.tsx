@@ -1,6 +1,7 @@
 import {FC, JSX} from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Provider } from 'react-redux'
+import { MotionConfig } from 'framer-motion'
 import store, { persistor } from '@app/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ThemeProvider, WebSocketProvider } from '@app/providers/index.ts'
@@ -24,7 +25,9 @@ export const Providers: FC<IProviders> = ({ children }) => {
               enableSystem
             >
               <WebSocketProvider>
-                {children}
+                <MotionConfig reducedMotion="user">
+                  {children}
+                </MotionConfig>
               </WebSocketProvider>
             </ThemeProvider>
           </PersistGate>
