@@ -164,11 +164,11 @@ export const PreviewWidget = () => {
   const processTime = task?.processTime;
 
   return (
-    <div className="flex flex-col gap-6 p-4 lg:p-6">
+    <div className="flex w-full min-w-0 flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={onBack} className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="size-4" />
             Назад
           </Button>
 
@@ -179,7 +179,7 @@ export const PreviewWidget = () => {
 
         {previewLoading && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             Загружаю изображения...
           </div>
         )}
@@ -229,17 +229,17 @@ export const PreviewWidget = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
-        <Card className="border">
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
+      <div className="grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card className="min-w-0 border">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
             <CardTitle className="text-base">Исходное изображение</CardTitle>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <ImageIcon className="h-4 w-4" />
+              <ImageIcon className="size-4" />
               original
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-3">
+          <CardContent className="min-w-0 space-y-3">
             {isLoading ? (
               <>
                 <Skeleton className="h-8 w-40" />
@@ -259,16 +259,16 @@ export const PreviewWidget = () => {
           </CardContent>
         </Card>
 
-        <Card className="border">
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <Card className="min-w-0 border">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
             <CardTitle className="text-base">Итоговое изображение</CardTitle>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <ImageIcon className="h-4 w-4" />
+              <ImageIcon className="size-4" />
               result
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-3">
+          <CardContent className="min-w-0 space-y-3">
             {isLoading ? (
               <>
                 <Skeleton className="h-8 w-40" />

@@ -25,16 +25,16 @@ export const ProcessList = () => {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <div className="flex-wrap">
+      <section className="mx-auto flex w-full max-w-6xl min-w-0 flex-col gap-4 px-4 py-6">
         <ImageUpload
           onUploadSuccess={() => {
             navigate("/images");
           }}
         />
-        <div className="flex items-center gap-6 rounded-md p-4" style={{fontFamily: "Manrope, sans-serif"}}>
+        <div className="w-full min-w-0" style={{fontFamily: "Manrope, sans-serif"}}>
           <ImageTable data={data}/>
         </div>
-      </div>
+      </section>
     </>
   )
 }

@@ -180,10 +180,10 @@ export function ImageTable({data}: {data: ImageType[] }) {
   }
 
   return (
-    <Tabs defaultValue="photo" >
-      <div className="flex w-full flex-col justify-start gap-6 border rounded-3xl">
-        <TabsContent value="photo" className="relative flex flex-col gap-4 overflow-auto p-4 lg:px-6">
-          <div className="flex items-center justify-between px-4 py-2">
+    <Tabs defaultValue="photo" className="w-full min-w-0">
+      <div className="flex w-full min-w-0 flex-col justify-start gap-6 rounded-3xl border">
+        <TabsContent value="photo" className="relative flex min-w-0 flex-col gap-4 p-3 sm:p-4 lg:px-6">
+          <div className="flex flex-col gap-3 px-1 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
             <Input
               placeholder="Filter names..."
               style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}
@@ -191,9 +191,9 @@ export function ImageTable({data}: {data: ImageType[] }) {
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm mr-4"
+              className="w-full min-w-0 sm:mr-4 sm:max-w-sm"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:justify-end">
               {/*<Select*/}
               {/*  onValueChange={(value) => {*/}
               {/*    if (value === "all") {*/}
@@ -237,8 +237,8 @@ export function ImageTable({data}: {data: ImageType[] }) {
               </DropdownMenu>
             </div>
           </div>
-          <div className="overflow-hidden rounded-lg border">
-            <Table>
+          <div className="w-full max-w-full overflow-hidden rounded-lg border">
+            <Table className="min-w-[760px]">
               <TableHeader className="sticky top-0 z-10 dark:bg-neutral-900">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -288,12 +288,12 @@ export function ImageTable({data}: {data: ImageType[] }) {
               </TableBody>
             </Table>
           </div>
-          <div className="flex items-center justify-between px-4">
+          <div className="flex flex-col gap-3 px-1 sm:px-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="hidden flex-1 text-sm text-muted-foreground  mr-25 lg:flex" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
               {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
               selected.
             </div>
-            <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 sm:flex-nowrap lg:w-fit lg:justify-start lg:gap-8">
               <div className="hidden items-center gap-2 lg:flex">
                 <Label htmlFor="rows-per-page" className="text-sm font-medium" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                   Rows per page
@@ -316,13 +316,13 @@ export function ImageTable({data}: {data: ImageType[] }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex w-fit items-center justify-center text-sm font-medium" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
+              <div className="flex w-fit shrink-0 items-center justify-center text-sm font-medium" style={{fontFamily: "Manrope, sans-serif", fontWeight: 600 }}>
                 Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
               </div>
-              <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
                 <Button
                   variant="outline"
-                  className="hidden h-8 w-8 p-0 lg:flex"
+                  className="hidden size-8 p-0 lg:flex"
                   onClick={() => table.setPageIndex(0)}
                   disabled={!table.getCanPreviousPage()}
                 >

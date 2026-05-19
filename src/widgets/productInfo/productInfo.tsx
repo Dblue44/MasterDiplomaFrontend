@@ -63,7 +63,7 @@ const cardsContainer: Variants = {
 export function ProductInfo() {
 
   return (
-    <section className="py-20 px-4">
+    <section className="px-4 py-14 sm:py-20">
       <motion.div
         variants={sectionContainer}
         initial="hidden"
@@ -72,8 +72,8 @@ export function ProductInfo() {
         className="container mx-auto max-w-6xl"
       >
         <motion.div variants={blockItem} className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Как это работает</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Как это работает</h2>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Простой процесс из трех шагов для получения профессиональных результатов
           </p>
         </motion.div>
@@ -86,7 +86,7 @@ export function ProductInfo() {
             const Icon = icon;
             return (
               <motion.div key={index} variants={blockItem}>
-                <Card className="text-center hover:shadow-lg transition-shadow dark:shadow-none bg-background h-100">
+                <Card className="text-center hover:shadow-lg transition-shadow dark:shadow-none bg-background h-full min-h-72">
                   <CardContent className="pb-8 pt-6">
                     <CardDecorator>
                       <Icon className="size-6" aria-hidden />
@@ -105,9 +105,9 @@ export function ProductInfo() {
           <BeforeAfterSlider
             beforeSrc="/images/before.jpg"
             afterSrc="/images/after.jpg"
-            className="max-w-3xl mx-auto"
-            width="w-220"
-            height="h-120"
+            className="w-full max-w-3xl mx-auto"
+            width="w-full"
+            height="aspect-[16/9]"
           />
         </motion.div>
 
@@ -136,7 +136,7 @@ export function ProductInfo() {
 }
 
 const CardDecorator = ({ children }: { children: ReactNode }) => (
-  <div className="relative mx-auto size-36 duration-200 [--color-border:color-mix(in_oklab,var(--color-zinc-950)10%,transparent)] group-hover:[--color-border:color-mix(in_oklab,var(--color-zinc-950)20%,transparent)] dark:[--color-border:color-mix(in_oklab,var(--color-white)15%,transparent)] dark:group-hover:bg-white/5 dark:group-hover:[--color-border:color-mix(in_oklab,var(--color-white)20%,transparent)]">
+  <div className="relative mx-auto size-28 sm:size-36 duration-200 [--color-border:color-mix(in_oklab,var(--color-zinc-950)10%,transparent)] group-hover:[--color-border:color-mix(in_oklab,var(--color-zinc-950)20%,transparent)] dark:[--color-border:color-mix(in_oklab,var(--color-white)15%,transparent)] dark:group-hover:bg-white/5 dark:group-hover:[--color-border:color-mix(in_oklab,var(--color-white)20%,transparent)]">
     <div
       aria-hidden
       className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:24px_24px]"

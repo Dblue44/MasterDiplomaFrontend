@@ -16,8 +16,13 @@ const PrivacyPage = lazy(() => import("@pages/privacy").then((module) => ({ defa
 const TermsPage = lazy(() => import("@pages/terms").then((module) => ({ default: module.TermsPage })));
 const ContactsPage = lazy(() => import("@pages/contacts").then((module) => ({ default: module.ContactsPage })));
 
+const PageFallback = () => (
+  <div className="min-h-[calc(100svh-4rem)] w-full" aria-hidden />
+);
+
+
 const routeElement = (element: JSX.Element) => (
-  <Suspense fallback={null}>
+  <Suspense fallback={<PageFallback />}>
     {element}
   </Suspense>
 );

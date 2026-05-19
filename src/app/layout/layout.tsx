@@ -7,9 +7,9 @@ import {Footer} from "@widgets/footer/footer.tsx";
 export const Layout = () => {
   return (
     <>
-      <SidebarInset>
+      <SidebarInset className="min-h-svh">
         <Header/>
-        <main id="app-main" className="h-full flex justify-center items-center">
+        <main id="app-main" className="flex flex-1 justify-center">
           <Outlet />
         </main>
         <Footer />

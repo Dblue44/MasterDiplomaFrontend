@@ -27,7 +27,7 @@ export const HomePage = () => {
 
   return (
     <div id={"home"} className="flex flex-col pt-16">
-      <Meteors number={10} />
+      <Meteors number={12} />
       <Toaster position="top-center" richColors />
       <motion.div
         variants={gridContainer}

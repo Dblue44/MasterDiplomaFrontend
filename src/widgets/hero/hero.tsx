@@ -29,6 +29,7 @@ const item: Variants = {
 export function Hero() {
   const navigate = useNavigate();
   const { theme, resolvedTheme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
   const isDark = (theme ?? resolvedTheme) === "dark";
 
   const textColors = isDark
@@ -45,8 +46,24 @@ export function Hero() {
     return () => window.removeEventListener("scroll", onFirstScroll);
   }, []);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    const handleChange = () => {
+      setIsMobile(mediaQuery.matches);
+    };
+
+    handleChange();
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+
   return (
-    <section className="py-50 px-4">
+    <section className="relative px-4 py-20 sm:py-28 lg:py-50">
       <motion.div
         variants={container}
         initial="hidden"
@@ -57,9 +74,8 @@ export function Hero() {
       >
         <motion.h1
           variants={item}
-          className="relative mb-6 text-4xl md:text-6xl font-bold tracking-tight leading-[1.1]"
+          className="relative mb-6 text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight leading-[1.1]"
         >
-          {/* Невидимый «призрак» — резервирует высоту под 1–2 строки */}
           <span aria-hidden className="invisible block">
             Увеличим разрешение ваших фото с помощью AI
           </span>
@@ -77,7 +93,7 @@ export function Hero() {
 
         <motion.p
           variants={item}
-          className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
         >
           Превратите размытые снимки в четкие изображения высокого разрешения
           с помощью нашей модели нейронной сети
@@ -87,7 +103,7 @@ export function Hero() {
           variants={item}
           className="flex space-y-6 items-center justify-center"
         >
-          <Magnet padding={60} disabled={false} magnetStrength={4}>
+          <Magnet padding={60} disabled={isMobile} magnetStrength={4}>
             <ImageUpload
               onUploadSuccess={() => {
                 navigate("/images");
