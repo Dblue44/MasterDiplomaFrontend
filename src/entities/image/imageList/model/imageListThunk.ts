@@ -18,6 +18,22 @@ import {cancelImageList, downloadImageList, getTasksStatuses} from "@shared/api/
 import {CancelErrorType} from "@shared/types/errorTypes.ts";
 import {z} from "zod";
 
+const IMAGE_DIMENSIONS_TOO_LARGE_ERROR = "Image dimensions too large";
+
+const getErrorMessage = (err: ErrorType) => {
+  const responseData = err.response?.data;
+
+  if (typeof responseData === "string") {
+    if (responseData === IMAGE_DIMENSIONS_TOO_LARGE_ERROR) {
+      return "Размер изображения слишком большой. Максимальный размер: 1080x920 px";
+    }
+
+    return responseData;
+  }
+
+  return responseData?.detail ?? err.message ?? "Unknown error";
+};
+
 export const postImage = createAsyncThunk<
   ImageType,
   PostImageType,
@@ -45,7 +61,7 @@ export const postImage = createAsyncThunk<
     const knownError = err as ErrorType
 
     return thunkAPI.rejectWithValue({
-      messageError: knownError.response?.data?.detail ?? knownError.message ?? "Unknown error",
+      messageError: getErrorMessage(knownError),
       status: knownError.response?.status,
     })
   }
@@ -117,7 +133,7 @@ export const getPreviewImages = createAsyncThunk<
     const knownError = err as ErrorType
 
     return thunkAPI.rejectWithValue({
-      messageError: knownError.response?.data?.detail ?? "Unknown error",
+      messageError: getErrorMessage(knownError),
       status: knownError.response?.status,
     })
   }
@@ -134,7 +150,7 @@ export const getTasks = createAsyncThunk<
     const knownError = err as ErrorType
 
     return thunkAPI.rejectWithValue({
-      messageError: knownError.response?.data?.detail ?? "Unknown error",
+      messageError: getErrorMessage(knownError),
       status: knownError.response?.status,
     })
   }

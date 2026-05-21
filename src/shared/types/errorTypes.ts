@@ -1,8 +1,8 @@
 export interface ErrorType {
   readonly message: string
   readonly response: {
-    readonly status?: string
-    readonly data?: {
+    readonly status?: number
+    readonly data?: string | {
       readonly detail?: string
     }
   }
@@ -19,5 +19,5 @@ export interface CancelErrorType {
 
 export interface RejectedDataType {
   readonly messageError: string
-  readonly status?: string
+  readonly status?: number
 }
