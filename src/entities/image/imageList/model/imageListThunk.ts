@@ -18,21 +18,22 @@ import {cancelImageList, downloadImageList, getTasksStatuses} from "@shared/api/
 import {CancelErrorType} from "@shared/types/errorTypes.ts";
 import {z} from "zod";
 
-const IMAGE_DIMENSIONS_TOO_LARGE_ERROR = "Image dimensions too large";
+const IMAGE_DIMENSIONS_TOO_LARGE_ERROR = "IMAGE_SIZE_ERROR";
+const IMAGE_DIMENSIONS_TOO_LARGE_ERROR_MESSAge = "Размер изображения слишком большой. Оптимальный размер: 1024x2048 px";
 
 const getErrorMessage = (err: ErrorType) => {
   const responseData = err.response?.data;
 
   if (typeof responseData === "string") {
     if (responseData === IMAGE_DIMENSIONS_TOO_LARGE_ERROR) {
-      return "Размер изображения слишком большой. Максимальный размер: 1080x920 px";
+      return IMAGE_DIMENSIONS_TOO_LARGE_ERROR_MESSAge;
     }
 
     return responseData;
   }
 
   if (responseData?.detail == IMAGE_DIMENSIONS_TOO_LARGE_ERROR) {
-    return "Размер изображения слишком большой. Максимальный размер: 1080x920 px";
+    return IMAGE_DIMENSIONS_TOO_LARGE_ERROR_MESSAge;
   }
 
   return responseData?.detail ?? err.message ?? "Unknown error";

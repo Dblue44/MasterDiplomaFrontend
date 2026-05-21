@@ -63,9 +63,21 @@ imageProcessTimeListenerMiddleware.startListening({
 imageProcessTimeListenerMiddleware.startListening({
   actionCreator: getTasks.fulfilled,
   effect: (action) => {
+    const existingGuids = new Set(action.meta.arg.guids);
+    const returnedGuids = new Set<string>();
+
     action.payload.forEach((taskMap) => {
-      const [guid, status] = Object.entries(taskMap)[0] ?? [];
-      if (guid && status && terminalStatuses.has(status)) {
+      Object.entries(taskMap).forEach(([guid, status]) => {
+        returnedGuids.add(guid);
+
+        if (terminalStatuses.has(status)) {
+          stopTimer(guid);
+        }
+      });
+    });
+
+    existingGuids.forEach((guid) => {
+      if (!returnedGuids.has(guid)) {
         stopTimer(guid);
       }
     });

@@ -102,16 +102,20 @@ const imageListSlice = createSlice({
         state.error = null
       })
       .addCase(getTasks.fulfilled, (state, action) => {
-        action.payload.forEach((taskMap) => {
-          const [guid, status] = Object.entries(taskMap)[0] ?? []
-          if (!guid || !status) return
+        const tasksByGuid = new Map(
+          action.payload.flatMap((taskMap) => Object.entries(taskMap))
+        )
 
-          const image = state.images.find((img) => img.guid === guid)
-          if (image && image.status !== status) {
-            image.status = status
-          }
+        action.payload.forEach((taskMap) => {
+          Object.entries(taskMap).forEach(([guid, status]) => {
+            const image = state.images.find((img) => img.guid === guid)
+            if (image && image.status !== status) {
+              image.status = status
+            }
+          })
         })
 
+        state.images = state.images.filter((image) => tasksByGuid.has(image.guid))
         state.totalCountImages = state.images.length
         state.loading = false
         state.error = null
