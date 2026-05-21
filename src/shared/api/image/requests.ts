@@ -17,7 +17,6 @@ export const getResultsPostImage = async ({file, scale}: PostImageType): Promise
 export const downloadImageList = ({guids}: ImageListType): Promise<ImagesDataType> => {
   return apiInstance.downloadPost(`/downloadImages`, guids, {
     responseType: 'blob',
-    withCredentials: true,
     headers: {'Content-Type': 'application/json'},
   })
 }
@@ -36,7 +35,6 @@ export const getOriginalImage = ({guid}: OriginalImageRequest): Promise<ImagesDa
 
 export const getTasksStatuses = ({guids}: ImageListType): Promise<GetTasksResponse> => {
   return apiInstance.post(`/getTasks`, guids, {
-    withCredentials: true,
     headers: {'Content-Type': 'application/json'},
   })
 }
