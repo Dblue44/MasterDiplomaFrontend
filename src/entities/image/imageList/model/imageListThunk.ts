@@ -31,6 +31,10 @@ const getErrorMessage = (err: ErrorType) => {
     return responseData;
   }
 
+  if (responseData?.detail == IMAGE_DIMENSIONS_TOO_LARGE_ERROR) {
+    return "Размер изображения слишком большой. Максимальный размер: 1080x920 px";
+  }
+
   return responseData?.detail ?? err.message ?? "Unknown error";
 };
 
