@@ -16,13 +16,37 @@ import {
 } from "@shared/ui/dialog.tsx";
 import {Button} from "@shared/ui/button.tsx";
 
+const MAX_IMAGE_WIDTH = 1080;
+const MAX_IMAGE_HEIGHT = 920;
+const IMAGE_SIZE_ERROR_MESSAGE = "Фотография не должна превышать размера 1080x920 пикселей";
+const IMAGE_SIZE_ERROR_MESSAGE_VERTICAL = "Фотография не должна превышать размера 920x1080 пикселей";
+
+const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => (
+  new Promise((resolve, reject) => {
+    const imageUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(imageUrl);
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(imageUrl);
+      reject(new Error("Failed to load image"));
+    };
+
+    image.src = imageUrl;
+  })
+);
+
 export const ImageUpload: React.FC<ImageUploadProps> = ({
      onUploadSuccess,
      onUploadError,
-   }) => {
+  }) => {
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const selectedFileRef = useRef<File | null>(null);
   const [isScaleDialogOpen, setIsScaleDialogOpen] = useState(false);
   const loading = useAppSelector((state: RootState) => state.image.loading);
 
@@ -34,23 +58,59 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    setSelectedFile(files[0]);
+    const file = files[0];
+    let dimensions: { width: number; height: number };
+
+    try {
+      dimensions = await getImageDimensions(file);
+    } catch {
+      toast.error("Не удалось прочитать фотографию", {
+        icon: <AlertCircleIcon />,
+        richColors: true,
+      });
+      resetSelectedFile();
+      return;
+    }
+
+    if (dimensions.width >= dimensions.height) {
+      if (dimensions.width > MAX_IMAGE_WIDTH || dimensions.height > MAX_IMAGE_HEIGHT) {
+        toast.error(IMAGE_SIZE_ERROR_MESSAGE, {
+          icon: <AlertCircleIcon />,
+          richColors: true,
+        });
+        resetSelectedFile();
+        return;
+      }
+    } else {
+      if (dimensions.height > MAX_IMAGE_WIDTH || dimensions.width > MAX_IMAGE_HEIGHT) {
+        toast.error(IMAGE_SIZE_ERROR_MESSAGE_VERTICAL, {
+          icon: <AlertCircleIcon />,
+          richColors: true,
+        });
+        resetSelectedFile();
+        return;
+      }
+    }
+
+
+
+    selectedFileRef.current = file;
     setIsScaleDialogOpen(true);
   };
 
   const resetSelectedFile = () => {
-    setSelectedFile(null);
+    selectedFileRef.current = null;
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleScaleSelect = async (scale: "2" | "4") => {
-    if (!selectedFile) return;
+    if (!selectedFileRef.current) return;
 
     setIsScaleDialogOpen(false);
     try {
-      const result = await dispatch(postImage({ file: selectedFile, scale }));
+      const result = await dispatch(postImage({ file: selectedFileRef.current, scale }));
       if (postImage.rejected.match(result)) {
         toast.error("Ошибка при отправке фотографии", {
           icon: <AlertCircleIcon />,
@@ -87,7 +147,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           className="hidden"
         />
         {loading ? (
-          <LoaderIcon className="animate-spin text-blue-500 w-5 h-5"/>
+          <LoaderIcon className="animate-spin text-blue-500 size-5"/>
         ) : (
           <InteractiveHoverButton
             onClick={handleButtonClick}
